@@ -1,9 +1,11 @@
 const Discord = require("discord.js");
+const tokenfile = require("./tokenfile.json");
 const botconfig = require("./botconfig.json");
 const bot =new Discord.Client({disableEveryone: true});
 var weather = require('weather-js');
 const superagent = require('superagent');
 const randomPuppy = require('random-puppy');
+const { report } = require("superagent");
 
 bot.on("ready", async() => {
     console.log(`${bot.user.username} elindult!`)
@@ -58,6 +60,9 @@ bot.on("message", async message => {
         message.reply("írj szöveget!")
     }
 }
+
+////////// Moderator //////////
+
 
         if(cmd === `${prefix}kick`){
             if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("Ehez nincs jogod")
@@ -133,6 +138,46 @@ bot.on("message", async message => {
             }
         }
 
+if(cmd === `${prefix}report`){
+    if(args[0] && message.mentions.members.first() && args[1]){
+
+        message.channel.send("A reportodat sikeresen elküldtük!")
+
+        let report_channel = "855183674918830170";
+
+
+        let report_embed = new Discord.MessageEmbed()
+            .setAuthor(message.mentions.members.first().user.tag + `| REPORTED`)
+            .setDescription("Report indoka:" + args.join("").slice(args[0].length))
+            .addField("Reportolta:", message.author.tag)
+            .setColor("RANDOM")
+            .setTimestamp(message.createdAt)
+            .setFooter(bot.user.username)
+
+            bot.channels.cache.get(report_channel).send(report_embed)
+    }else{
+        let he_embed = new Discord.MessageEmbed()
+            .setAuthor(message.author.tag + `| Használat`)
+            .setDescription(`${prefix}report @<Név> <Indok>`)
+            .setColor("RANDOM")
+            .setTimestamp(message.createdAt)
+            .setFooter(bot.user.username)
+
+            message.channel.send(he_embed)
+
+    }
+}
+
+
+
+
+       
+
+
+
+
+
+////////// Fun //////////
 
         if (cmd === `${prefix}weather`){
             if(args[0]){
@@ -200,4 +245,4 @@ bot.on("message", async message => {
 
 })
 
-bot.login(process.env.BOT_TOKEN);
+bot.login(tokenfile.token);
